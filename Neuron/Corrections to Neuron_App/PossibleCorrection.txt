@@ -1,0 +1,37 @@
+From : https://vimeo.com/19569529
+
+Kirill Brezhnyev3 months ago
+
+Hello David. Very good tutorial. BUT!!!! There is one tiny thing i never understood, which made me come back again and again to your tutorial and in the meantime reference tonns of other sources. It is very pitty that this tiny thing spoils the whole great work you did. Namely:
+
+The formular for backpropagation should read:
+
+void Neuron::calcHiddenGradients(const Layer &nextLayer)
+{
+double dow = sumDOW(nextLayer);
+m_gradient = dow * Neuron::transferFunctionDerivative(m_inputVal); // NOT m_outputVal
+}
+void Neuron::calcOutputGradients(double targetVals)
+{
+double delta = targetVals - m_outputVal;
+m_gradient = delta * Neuron::transferFunctionDerivative(m_inputVal); // NOT m_outputVal
+}
+
+where m_inputVal is a new member variable and is set to sum:
+...
+m_inputVal = sum;
+m_outputVal = Neuron::transferFunction(sum);
+}
+
+the derivative of the activation function in turn should be:
+double Neuron::transferFunctionDerivative(double x)
+{
+// tanh derivative
+return 1.0 - tanh(x) * tanh(x);
+}
+
+This btw can be the reason why sigmoid function did not work for some gyus. Just because the code is NOT GENERIC!!!
+
+Another issue for the guys who may see some funky figures unlike 0 and 1 in the ouput. Try out different machine, architecture, IDE, compiler. For me, for ex. Linux Virtual Box did not work properly, but windows tortoise-git bash terminal did.
+
+With best regards
